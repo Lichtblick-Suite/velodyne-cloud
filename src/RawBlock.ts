@@ -29,6 +29,6 @@ export class RawBlock {
   }
 
   intensity(index: number): number {
-    return this.data[4 + 3 * index + 2] as number;
+    return this.data[4 + 3 * index + 2]!;
   }
 }

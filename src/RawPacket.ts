@@ -38,8 +38,8 @@ export class RawPacket {
     const view = new DataView(data.buffer, data.byteOffset, data.byteLength);
 
     this.gpsTimestamp = view.getUint32(1200, true);
-    this.factoryField1 = data[1204] as number;
-    this.factoryField2 = data[1205] as number;
+    this.factoryField1 = data[1204]!;
+    this.factoryField2 = data[1205]!;
     this.returnMode = this.factoryField1 in ReturnMode ? this.factoryField1 : undefined;
     this.factoryId = this.factoryField2 in FactoryId ? this.factoryField2 : undefined;
   }

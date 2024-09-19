@@ -1,14 +1,14 @@
-# @foxglove/velodyne-cloud
+# @lichtblick/velodyne-cloud
 
 > _TypeScript library for converting Velodyne LIDAR packet data to point clouds_
 
-[![npm version](https://img.shields.io/npm/v/@foxglove/velodyne-cloud.svg?style=flat)](https://www.npmjs.com/package/@foxglove/velodyne-cloud)
+[![npm version](https://img.shields.io/npm/v/@lichtblick/velodyne-cloud.svg?style=flat)](https://www.npmjs.com/package/@lichtblick/velodyne-cloud)
 
 ## Introduction
 
 [Velodyne](https://velodynelidar.com/) LIDAR hardware broadcasts a steady stream of UDP packets representing laser scan data. These raw packets need to be converted to point clouds using calibration data specific to each hardware model. This TypeScript library provides best-effort detection of Velodyne hardware model from analyzing packets and includes calibration data to automatically convert raw data into a 3D point cloud representation.
 
-This library is used by [Foxglove](https://foxglove.dev/) to convert [velodyne_msgs/VelodyneScan](http://docs.ros.org/en/indigo/api/velodyne_msgs/html/msg/VelodyneScan.html) ROS messages to [sensor_msgs/PointCloud2](http://docs.ros.org/en/melodic/api/sensor_msgs/html/msg/PointCloud2.html) messages.
+This library is used by [lichtblick](https://github.com/lichtblick-suite) to convert [velodyne_msgs/VelodyneScan](http://docs.ros.org/en/indigo/api/velodyne_msgs/html/msg/VelodyneScan.html) ROS messages to [sensor_msgs/PointCloud2](http://docs.ros.org/en/melodic/api/sensor_msgs/html/msg/PointCloud2.html) messages.
 
 ## Usage
 
@@ -19,7 +19,7 @@ import {
   PointFieldDataType,
   RawPacket,
   Transformer
-} from "@foxglove/velodyne-cloud";
+} from "@lichtblick/velodyne-cloud";
 
 type VelodynePacket = {
   stamp: { sec: number, nsec: number };
@@ -64,14 +64,10 @@ function createPointCloud(packets: VelodynePacket[]) {
 
 ## License
 
-@foxglove/velodyne-cloud is licensed under the [MIT License](https://opensource.org/licenses/MIT).
+@lichtblick/velodyne-cloud is licensed under the [MIT License](https://opensource.org/licenses/MIT).
 
 ## Releasing
 
 1. Run `yarn version --[major|minor|patch]` to bump version
 2. Run `git push && git push --tags` to push new tag
 3. GitHub Actions will take care of the rest
-
-## Stay in touch
-
-Join our [Slack channel](https://foxglove.dev/slack) to ask questions, share feedback, and stay up to date on what our team is working on.

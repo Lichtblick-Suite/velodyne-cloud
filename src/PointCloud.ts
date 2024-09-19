@@ -59,7 +59,7 @@ export class PointCloud {
   data: Uint8Array;
   readonly is_dense: boolean;
 
-  private _view: DataView;
+  #view: DataView;
 
   constructor({ stamp, maxPoints }: PointCloudOptions) {
     this.stamp = stamp;
@@ -81,7 +81,7 @@ export class PointCloud {
     this.data = new Uint8Array(maxPoints * PointCloud.POINT_STEP);
     this.is_dense = true;
 
-    this._view = new DataView(this.data.buffer, this.data.byteOffset, this.data.byteLength);
+    this.#view = new DataView(this.data.buffer, this.data.byteOffset, this.data.byteLength);
   }
 
   // Add a 3D point to the point cloud and increment the internal data pointer
@@ -96,14 +96,14 @@ export class PointCloud {
     deltaNs: number, // [ns] Time when this laser was fired relative to the start of the scan
   ): void {
     const offset = this.width * PointCloud.POINT_STEP;
-    this._view.setFloat32(offset + 0, x, true);
-    this._view.setFloat32(offset + 4, y, true);
-    this._view.setFloat32(offset + 8, z, true);
-    this._view.setFloat32(offset + 12, distance, true);
-    this._view.setFloat32(offset + 16, intensity, true);
-    this._view.setUint16(offset + 20, ring, true);
-    this._view.setUint16(offset + 22, azimuth, true);
-    this._view.setUint32(offset + 24, deltaNs, true);
+    this.#view.setFloat32(offset + 0, x, true);
+    this.#view.setFloat32(offset + 4, y, true);
+    this.#view.setFloat32(offset + 8, z, true);
+    this.#view.setFloat32(offset + 12, distance, true);
+    this.#view.setFloat32(offset + 16, intensity, true);
+    this.#view.setUint16(offset + 20, ring, true);
+    this.#view.setUint16(offset + 22, azimuth, true);
+    this.#view.setUint32(offset + 24, deltaNs, true);
     this.width++;
     this.row_step = this.width * PointCloud.POINT_STEP;
   }
@@ -112,14 +112,14 @@ export class PointCloud {
   point(index: number): Point {
     const offset = index * PointCloud.POINT_STEP;
     return {
-      x: this._view.getFloat32(offset + 0, true),
-      y: this._view.getFloat32(offset + 4, true),
-      z: this._view.getFloat32(offset + 8, true),
-      distance: this._view.getFloat32(offset + 12, true),
-      intensity: this._view.getFloat32(offset + 16, true),
-      ring: this._view.getUint16(offset + 20, true),
-      azimuth: this._view.getUint16(offset + 22, true),
-      deltaNs: this._view.getUint32(offset + 24, true),
+      x: this.#view.getFloat32(offset + 0, true),
+      y: this.#view.getFloat32(offset + 4, true),
+      z: this.#view.getFloat32(offset + 8, true),
+      distance: this.#view.getFloat32(offset + 12, true),
+      intensity: this.#view.getFloat32(offset + 16, true),
+      ring: this.#view.getUint16(offset + 20, true),
+      azimuth: this.#view.getUint16(offset + 22, true),
+      deltaNs: this.#view.getUint32(offset + 24, true),
     };
   }
 

@@ -61,13 +61,13 @@ describe("Transformer", () => {
 
   // CI performance is non-deterministic, a better approach will be to have dedicated machines
   // and log performance over time to correlate regressions rather than gate
-  // eslint-disable-next-line jest/no-disabled-tests
-  it.skip("has expected performance", async () => {
+
+  it("has expected performance", async () => {
     const calibration = new Calibration(Model.HDL32E);
     const transform = new Transformer(calibration);
     const maxPoints = RawPacket.MAX_POINTS_PER_PACKET * 100;
 
-    await benchmark.record(
+    const result = await benchmark.record(
       ["Transformer", "HDL-32E"],
       () => {
         const raw = new RawPacket(HDL32E_PACKET1);
@@ -79,7 +79,8 @@ describe("Transformer", () => {
       },
       { iterations: 10, meanUnder: 15 },
     );
-
+    const max_time = result.mean;
+    expect(max_time).toBeLessThan(15);
     console.log(benchmark.report());
   }, 10_000);
 });
