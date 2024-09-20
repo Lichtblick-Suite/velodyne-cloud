@@ -60,27 +60,28 @@ export class Transformer {
     packetStamp ??= raw.timestamp();
     switch (raw.factoryId) {
       case FactoryId.VLP16:
-      case FactoryId.VLP16HiRes:
-        return this._unpackVLP16(raw, scanStamp, packetStamp, output);
+      case FactoryId.VLP16HiRes: {
+        this.#unpackVLP16(raw, scanStamp, packetStamp, output);
+        return;
+      }
       case FactoryId.VLS128:
-      case FactoryId.VLS128Old:
-        return this._unpackVLS128(raw, scanStamp, packetStamp, output);
-      default:
-        return this._unpackGeneric(raw, scanStamp, packetStamp, output);
+      case FactoryId.VLS128Old: {
+        this.#unpackVLS128(raw, scanStamp, packetStamp, output);
+        return;
+      }
+      default: {
+        this.#unpackGeneric(raw, scanStamp, packetStamp, output);
+        return;
+      }
     }
   }
 
-  private _unpackGeneric(
-    raw: RawPacket,
-    scanStamp: number,
-    packetStamp: number,
-    output: PointCloud,
-  ): void {
+  #unpackGeneric(raw: RawPacket, scanStamp: number, packetStamp: number, output: PointCloud): void {
     const timeDiffStartToThisPacket = packetStamp - scanStamp;
     const xyz: Point = [0, 0, 0];
 
     for (let i = 0; i < RawPacket.BLOCKS_PER_PACKET; i++) {
-      const block = raw.blocks[i] as RawBlock;
+      const block = raw.blocks[i]!;
       const rawRotation = block.rotation;
       // Discard blocks that are outside the area of interest
       if (!angleInRange(rawRotation, this.minAngle, this.maxAngle)) {
@@ -98,7 +99,7 @@ export class Transformer {
         }
 
         const laserNumber = j + bankOrigin;
-        const corrections = this.calibration.laserCorrections[laserNumber] as LaserCorrection;
+        const corrections = this.calibration.laserCorrections[laserNumber]!;
 
         // Position
         const rawDistance = block.distance(j);
@@ -131,12 +132,7 @@ export class Transformer {
     }
   }
 
-  private _unpackVLS128(
-    raw: RawPacket,
-    scanStamp: number,
-    packetStamp: number,
-    output: PointCloud,
-  ): void {
+  #unpackVLS128(raw: RawPacket, scanStamp: number, packetStamp: number, output: PointCloud): void {
     const timeDiffStartToThisPacket = packetStamp - scanStamp;
     const dualReturn = raw.returnMode === ReturnMode.DualReturn ? 1 : 0;
     const blockCount = RawPacket.BLOCKS_PER_PACKET - 4 * dualReturn;
@@ -147,7 +143,7 @@ export class Transformer {
     const xyz: Point = [0, 0, 0];
 
     for (let i = 0; i < blockCount; i++) {
-      const block = raw.blocks[i] as RawBlock;
+      const block = raw.blocks[i]!;
       const rawRotation = block.rotation;
       const timingOffsetsRow = this.calibration.timingOffsets[~~(i / 4)] ?? [];
       const bankOrigin = bankOriginForBlock(block.blockId);
@@ -159,7 +155,7 @@ export class Transformer {
         azimuth = azimuthNext;
       }
       if (i < RawPacket.BLOCKS_PER_PACKET - (1 + dualReturn)) {
-        const nextBlock = raw.blocks[i + (1 + dualReturn)] as RawBlock;
+        const nextBlock = raw.blocks[i + (1 + dualReturn)]!;
         // Get the next block rotation to calculate how far we rotate between
         // blocks
         azimuthNext = nextBlock.rotation;
@@ -188,11 +184,11 @@ export class Transformer {
         // VLS-128 fires 8 lasers at a time
         const firingOrder = ~~(laserNumber / 8);
 
-        const corrections = this.calibration.laserCorrections[laserNumber] as LaserCorrection;
+        const corrections = this.calibration.laserCorrections[laserNumber]!;
 
         // correct for the laser rotation as a function of timing during the
         // firings
-        const azimuthCorrection = this.calibration.vls128LaserAzimuthCache[firingOrder] as number;
+        const azimuthCorrection = this.calibration.vls128LaserAzimuthCache[firingOrder]!;
         const azimuthCorrectedF = azimuth + azimuthDiff * azimuthCorrection;
         const azimuthCorrected = Math.round(azimuthCorrectedF) % 36000;
         if (!angleInRange(azimuthCorrected, this.minAngle, this.maxAngle)) {
@@ -224,25 +220,20 @@ export class Transformer {
     }
   }
 
-  private _unpackVLP16(
-    raw: RawPacket,
-    scanStamp: number,
-    packetStamp: number,
-    output: PointCloud,
-  ): void {
+  #unpackVLP16(raw: RawPacket, scanStamp: number, packetStamp: number, output: PointCloud): void {
     const timeDiffStartToThisPacket = packetStamp - scanStamp;
     let azimuthDiff = 0;
     let lastAzimuthDiff = 0;
     const xyz: Point = [0, 0, 0];
 
     for (let i = 0; i < RawPacket.BLOCKS_PER_PACKET; i++) {
-      const block = raw.blocks[i] as RawBlock;
+      const block = raw.blocks[i]!;
       const rawRotation = block.rotation;
       const timingOffsetsRow = this.calibration.timingOffsets[i] ?? [];
 
       // Calculate difference between current and next block's azimuth angle
       if (i < RawPacket.BLOCKS_PER_PACKET - 1) {
-        const nextBlock = raw.blocks[i + 1] as RawBlock;
+        const nextBlock = raw.blocks[i + 1]!;
 
         const rawAzimuthDiff = nextBlock.rotation - block.rotation;
         azimuthDiff = (36000 + rawAzimuthDiff) % 36000;
@@ -264,7 +255,7 @@ export class Transformer {
         }
 
         const dsr = j % VLP16_SCANS_PER_FIRING;
-        const corrections = this.calibration.laserCorrections[dsr] as LaserCorrection;
+        const corrections = this.calibration.laserCorrections[dsr]!;
 
         // Position
         const rawDistance = block.distance(j);
@@ -381,8 +372,8 @@ function computePosition(
   const cosRotCorrection = corrections.cosRotCorrection;
   const sinRotCorrection = corrections.sinRotCorrection;
 
-  const cosRot = calibration.cosRotTable[rawRotation] as number;
-  const sinRot = calibration.sinRotTable[rawRotation] as number;
+  const cosRot = calibration.cosRotTable[rawRotation]!;
+  const sinRot = calibration.sinRotTable[rawRotation]!;
   // cos(a-b) = cos(a)*cos(b) + sin(a)*sin(b)
   const cosRotAngle = cosRot * cosRotCorrection + sinRot * sinRotCorrection;
   // sin(a-b) = sin(a)*cos(b) - cos(a)*sin(b)

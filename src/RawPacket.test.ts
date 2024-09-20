@@ -2,7 +2,6 @@
 // License, v2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/
 
-import { RawBlock } from "./RawBlock";
 import { RawPacket } from "./RawPacket";
 import { BlockId, FactoryId, ReturnMode } from "./VelodyneTypes";
 import { HDL32E_PACKET1 } from "./fixtures/packets";
@@ -24,7 +23,7 @@ describe("RawPacket", () => {
     expect(raw.factoryId).toEqual(FactoryId.HDL32E);
     expect(raw.blocks).toHaveLength(12);
 
-    const block0 = raw.blocks[0] as RawBlock;
+    const block0 = raw.blocks[0]!;
     expect(block0.data).toHaveLength(100);
     expect(block0.blockId).toEqual(BlockId.Block_0_To_31);
     expect(block0.rotation).toEqual(22288);

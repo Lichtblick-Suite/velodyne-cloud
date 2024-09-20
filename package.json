@@ -1,6 +1,6 @@
 {
-  "name": "@foxglove/velodyne-cloud",
-  "version": "1.0.1",
+  "name": "@lichtblick/velodyne-cloud",
+  "version": "1.0.0",
   "description": "TypeScript library for converting Velodyne LIDAR packet data to point clouds",
   "license": "MIT",
   "keywords": [
@@ -11,13 +11,13 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/foxglove/velodyne-cloud.git"
+    "url": "https://github.com/Lichtblick-Suite/velodyne-cloud.git"
   },
   "author": {
-    "name": "Foxglove Technologies Inc",
-    "email": "contact@foxglove.dev"
+    "name": "Lichtblick",
+    "email": "lichtblick@bmwgroup.com"
   },
-  "homepage": "https://github.com/foxglove/velodyne-cloud",
+  "homepage": "https://github.com/Lichtblick-Suite",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "files": [
@@ -36,24 +36,25 @@
     "node": ">= 14"
   },
   "devDependencies": {
-    "@foxglove/eslint-plugin": "0.13.0",
+    "@lichtblick/eslint-plugin": "1.0.1",
     "@types/eslint": "^7",
     "@types/eslint-plugin-prettier": "^3",
-    "@types/jest": "^26.0.23",
+    "@types/jest": "29.5.12",
     "@types/node": "^16.3.3",
     "@types/prettier": "2.3.2",
-    "@typescript-eslint/eslint-plugin": "4.28.3",
-    "@typescript-eslint/parser": "4.28.3",
-    "eslint": "7.31.0",
+    "@typescript-eslint/eslint-plugin": "6.10.0",
+    "@typescript-eslint/parser": "6.10.0",
+    "eslint": "8.50.0",
     "eslint-config-prettier": "8.3.0",
+    "eslint-plugin-es": "4.1.0",
     "eslint-plugin-filenames": "1.3.2",
-    "eslint-plugin-import": "2.23.4",
-    "eslint-plugin-jest": "24.3.6",
-    "eslint-plugin-prettier": "3.4.0",
-    "jest": "27.0.6",
+    "eslint-plugin-import": "2.29.1",
+    "eslint-plugin-jest": "27.6.3",
+    "eslint-plugin-prettier": "5.1.3",
+    "jest": "29.7.0",
     "kelonio": "0.6.0",
-    "prettier": "2.3.2",
-    "ts-jest": "^27.0.3",
-    "typescript": "4.3.5"
+    "prettier": "3.3.2",
+    "ts-jest": "29.2.5",
+    "typescript": "5.3.3"
   }
 }
