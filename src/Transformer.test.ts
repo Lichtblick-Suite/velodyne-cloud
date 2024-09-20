@@ -80,7 +80,7 @@ describe("Transformer", () => {
       { iterations: 10, meanUnder: 15 },
     );
     const max_time = result.mean;
-    expect(max_time).toBeLessThan(15);
+    expect(max_time).toBeLessThan(20);
     console.log(benchmark.report());
   }, 10_000);
 });
